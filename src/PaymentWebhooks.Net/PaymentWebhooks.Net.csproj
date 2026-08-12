@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>PaymentWebhooks</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>PaymentWebhooks.Net</PackageId>
+    <Version>0.1.0</Version>
+    <Title>PaymentWebhooks.NET</Title>
+    <Authors>Israel Iyonsi</Authors>
+    <Copyright>Copyright (c) 2026 Israel Iyonsi</Copyright>
+    <Description>Verify inbound payment webhook signatures for Stripe, Paystack, Flutterwave, GitHub, and Standard Webhooks in one API. Constant-time comparison and timestamp-based replay protection. Zero external dependencies.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/IsraelIyonsi/PaymentWebhooks.NET</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/IsraelIyonsi/PaymentWebhooks.NET</PackageProjectUrl>
+    <PackageTags>webhook;stripe;paystack;flutterwave;github;standard-webhooks;hmac;signature-verification;security</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>See https://github.com/IsraelIyonsi/PaymentWebhooks.NET/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="PaymentWebhooks.Net.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

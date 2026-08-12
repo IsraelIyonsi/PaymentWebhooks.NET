@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CD7DD0F1-449D-4AC0-9241-0934DBD90AEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentWebhooks.Net", "src\PaymentWebhooks.Net\PaymentWebhooks.Net.csproj", "{4A3F5D2C-EAAE-4F6B-AE1C-B9CD66EB873E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{44534772-F258-409A-BCDC-D5E524C99911}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentWebhooks.Net.Tests", "tests\PaymentWebhooks.Net.Tests\PaymentWebhooks.Net.Tests.csproj", "{9A367A38-BC6C-4164-A3C1-470DE86DC3A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A3F5D2C-EAAE-4F6B-AE1C-B9CD66EB873E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A3F5D2C-EAAE-4F6B-AE1C-B9CD66EB873E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A3F5D2C-EAAE-4F6B-AE1C-B9CD66EB873E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A3F5D2C-EAAE-4F6B-AE1C-B9CD66EB873E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A367A38-BC6C-4164-A3C1-470DE86DC3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A367A38-BC6C-4164-A3C1-470DE86DC3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A367A38-BC6C-4164-A3C1-470DE86DC3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A367A38-BC6C-4164-A3C1-470DE86DC3A3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4A3F5D2C-EAAE-4F6B-AE1C-B9CD66EB873E} = {CD7DD0F1-449D-4AC0-9241-0934DBD90AEA}
+		{9A367A38-BC6C-4164-A3C1-470DE86DC3A3} = {44534772-F258-409A-BCDC-D5E524C99911}
+	EndGlobalSection
+EndGlobal

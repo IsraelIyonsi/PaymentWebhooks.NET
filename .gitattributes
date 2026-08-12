@@ -1,0 +1,2 @@
+* text=auto
+tests/Jcs.Net.Tests/fixtures/** -text
