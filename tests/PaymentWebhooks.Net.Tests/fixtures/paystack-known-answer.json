@@ -1,0 +1,6 @@
+{
+  "description": "Self-generated known-answer vector for Paystack's X-Paystack-Signature scheme, computed independently with Python hmac/hashlib as HMAC-SHA512 hex of the raw body.",
+  "secretKey": "sk_test_1234567890abcdefghijklmnopqrstuv",
+  "payload": "{\"event\":\"charge.success\",\"data\":{\"id\":12345,\"amount\":10000}}",
+  "signature": "22c688587ce41bb8b67464ee81a99aefa37c147dfad5922b8e25c0da08e2c8f3eaf6b6356fe44ea9ab5fa7895e1cd9efa0489e445f686a9a0b297bb8911c61c0"
+}

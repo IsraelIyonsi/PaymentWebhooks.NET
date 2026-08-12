@@ -8,15 +8,6 @@ namespace PaymentWebhooks.Internal;
 /// </summary>
 internal static class HmacHexComputer
 {
-    public static string ComputeHexDigest(
-        HashAlgorithmName algorithm,
-        ReadOnlySpan<byte> key,
-        ReadOnlySpan<byte> message)
-    {
-        var digest = ComputeDigest(algorithm, key, ReadOnlySpan<byte>.Empty, message);
-        return Convert.ToHexString(digest).ToLowerInvariant();
-    }
-
     public static byte[] ComputeDigest(
         HashAlgorithmName algorithm,
         ReadOnlySpan<byte> key,

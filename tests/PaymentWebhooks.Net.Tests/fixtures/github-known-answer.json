@@ -1,0 +1,6 @@
+{
+  "description": "Self-generated known-answer vector for GitHub's X-Hub-Signature-256 scheme, computed independently with Python hmac/hashlib as HMAC-SHA256 hex of the raw body.",
+  "secret": "test_github_webhook_secret",
+  "payload": "{\"zen\":\"Responsive is better than fast.\",\"hook_id\":1}",
+  "signature": "sha256=ef00310a916468cbc8756a3845781a06157584e54dd99ad08631a8ba92e599d1"
+}

@@ -1,2 +1,2 @@
 * text=auto
-tests/Jcs.Net.Tests/fixtures/** -text
+tests/PaymentWebhooks.Net.Tests/fixtures/** -text

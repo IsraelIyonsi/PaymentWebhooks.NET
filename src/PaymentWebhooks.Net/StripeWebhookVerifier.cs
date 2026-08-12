@@ -49,7 +49,7 @@ public sealed class StripeWebhookVerifier : IWebhookVerifier
             return WebhookVerificationResult.Failure(WebhookVerificationFailureReason.MissingHeader);
         }
 
-        if (!TryParseSignatureHeader(headerValue, out var timestamp, out var signatures))
+        if (!TryParseSignatureHeader(headerValue, out var rawTimestamp, out var timestamp, out var signatures))
         {
             return WebhookVerificationResult.Failure(WebhookVerificationFailureReason.MalformedSignatureHeader);
         }
@@ -59,33 +59,46 @@ public sealed class StripeWebhookVerifier : IWebhookVerifier
             return WebhookVerificationResult.Failure(WebhookVerificationFailureReason.UnsupportedSignatureVersion);
         }
 
+        // The signed string is built from the timestamp's exact header substring (not a
+        // re-serialized numeric value) so verification is byte-for-byte faithful to whatever
+        // Stripe actually signed, per Stripe's own SDK.
+        var prefix = Encoding.UTF8.GetBytes(rawTimestamp + SignedPayloadSeparator);
+        var expectedDigest = HmacHexComputer.ComputeDigest(HashAlgorithmName.SHA256, _secretBytes, prefix, payload);
+
+        // Signature is verified before the timestamp tolerance, matching Stripe's own SDK
+        // ordering: an unauthenticated caller cannot distinguish "wrong secret" from "stale
+        // timestamp" by reading the failure reason alone.
+        var signatureValid = false;
+        foreach (var candidate in signatures)
+        {
+            if (ConstantTimeComparer.HexEquals(candidate, expectedDigest))
+            {
+                signatureValid = true;
+                break;
+            }
+        }
+
+        if (!signatureValid)
+        {
+            return WebhookVerificationResult.Failure(WebhookVerificationFailureReason.SignatureMismatch);
+        }
+
         var eventTime = DateTimeOffset.FromUnixTimeSeconds(timestamp);
         if ((DateTimeOffset.UtcNow - eventTime).Duration() > _timestampTolerance)
         {
             return WebhookVerificationResult.Failure(WebhookVerificationFailureReason.TimestampOutOfTolerance);
         }
 
-        var prefix = Encoding.UTF8.GetBytes(
-            timestamp.ToString(CultureInfo.InvariantCulture) + SignedPayloadSeparator);
-        var expected = HmacHexComputer.ComputeDigest(HashAlgorithmName.SHA256, _secretBytes, prefix, payload);
-        var expectedHex = Convert.ToHexString(expected).ToLowerInvariant();
-
-        foreach (var candidate in signatures)
-        {
-            if (ConstantTimeComparer.Equals(candidate, expectedHex))
-            {
-                return WebhookVerificationResult.Success();
-            }
-        }
-
-        return WebhookVerificationResult.Failure(WebhookVerificationFailureReason.SignatureMismatch);
+        return WebhookVerificationResult.Success();
     }
 
     private static bool TryParseSignatureHeader(
         string headerValue,
+        out string rawTimestamp,
         out long timestamp,
         out List<string> signatures)
     {
+        rawTimestamp = string.Empty;
         timestamp = default;
         signatures = new List<string>();
         var timestampFound = false;
@@ -101,13 +114,21 @@ public sealed class StripeWebhookVerifier : IWebhookVerifier
             var key = rawComponent[..separatorIndex];
             var value = rawComponent[(separatorIndex + 1)..];
 
-            if (key == TimestampComponentKey && !timestampFound)
+            if (key == TimestampComponentKey)
             {
+                // A second t= component is malformed input, not a first-wins ambiguity: reject
+                // it outright rather than silently picking one interpretation of the header.
+                if (timestampFound)
+                {
+                    return false;
+                }
+
                 if (!long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out timestamp))
                 {
                     return false;
                 }
 
+                rawTimestamp = value;
                 timestampFound = true;
             }
             else if (key == SignatureComponentKey)

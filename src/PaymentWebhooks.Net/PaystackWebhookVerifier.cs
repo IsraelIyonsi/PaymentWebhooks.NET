@@ -36,9 +36,10 @@ public sealed class PaystackWebhookVerifier : IWebhookVerifier
             return WebhookVerificationResult.Failure(WebhookVerificationFailureReason.MissingHeader);
         }
 
-        var expectedHex = HmacHexComputer.ComputeHexDigest(HashAlgorithmName.SHA512, _secretKeyBytes, payload);
+        var expectedDigest = HmacHexComputer.ComputeDigest(
+            HashAlgorithmName.SHA512, _secretKeyBytes, ReadOnlySpan<byte>.Empty, payload);
 
-        return ConstantTimeComparer.Equals(headerValue, expectedHex)
+        return ConstantTimeComparer.HexEquals(headerValue, expectedDigest)
             ? WebhookVerificationResult.Success()
             : WebhookVerificationResult.Failure(WebhookVerificationFailureReason.SignatureMismatch);
     }

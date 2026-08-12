@@ -44,9 +44,10 @@ public sealed class GitHubWebhookVerifier : IWebhookVerifier
         }
 
         var providedHex = headerValue[SignaturePrefix.Length..];
-        var expectedHex = HmacHexComputer.ComputeHexDigest(HashAlgorithmName.SHA256, _secretBytes, payload);
+        var expectedDigest = HmacHexComputer.ComputeDigest(
+            HashAlgorithmName.SHA256, _secretBytes, ReadOnlySpan<byte>.Empty, payload);
 
-        return ConstantTimeComparer.Equals(providedHex, expectedHex)
+        return ConstantTimeComparer.HexEquals(providedHex, expectedDigest)
             ? WebhookVerificationResult.Success()
             : WebhookVerificationResult.Failure(WebhookVerificationFailureReason.SignatureMismatch);
     }

@@ -23,4 +23,24 @@ internal static class ConstantTimeComparer
     {
         return Equals(Encoding.UTF8.GetBytes(left), Encoding.UTF8.GetBytes(right));
     }
+
+    /// <summary>
+    /// Compares a caller-supplied hex string against an expected raw digest, tolerating any
+    /// mix of upper- and lower-case hex digits in the caller-supplied value the way every
+    /// supported vendor's own verification code does.
+    /// </summary>
+    public static bool HexEquals(string providedHex, ReadOnlySpan<byte> expectedDigest)
+    {
+        byte[] providedBytes;
+        try
+        {
+            providedBytes = Convert.FromHexString(providedHex);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+
+        return Equals(providedBytes, expectedDigest);
+    }
 }

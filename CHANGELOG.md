@@ -5,20 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.1] - 2026-08-07
-
-### Security
-
-- Added a recursion-depth guard on the `JsonElement` canonicalization path. Deeply-nested attacker-controlled input passed through `Canonicalize(JsonElement)` / `CanonicalizeToUtf8(JsonElement)` could previously drive unbounded recursion into a `StackOverflowException`, which is uncatchable in .NET and terminates the whole process. Nesting is now limited to 64 levels, matching the effective cap the string entry points already enforce via the `System.Text.Json` `JsonDocument` default `MaxDepth`. Input deeper than 64 levels now fails with a catchable `JcsException` (derived from `JsonException`), so `TryCanonicalize` still returns `false` without throwing. Canonical output is unchanged for all non-deep input.
-
-## [0.1.0] - 2026-08-03
+## [0.1.0] - 2026-08-12
 
 ### Added
 
-- `JsonCanonicalizer` static API: `Canonicalize(string)`, `Canonicalize(JsonElement)`, `CanonicalizeToUtf8(string)`, `CanonicalizeToUtf8(JsonElement)`, and non-throwing `TryCanonicalize`.
-- Full RFC 8785 canonicalization: recursive property sorting by UTF-16 code units of the raw property name, minimal RFC-exact string escaping with lowercase hex escapes, no inter-token whitespace, UTF-8 output.
-- ECMAScript `Number::toString` number serialization: shortest round-trip digits, integer notation up to 10^21, lowercase `e` exponent notation with explicit sign, negative zero collapsed to `0`.
-- Strict I-JSON input validation with descriptive `JcsException` (derived from `JsonException`): invalid JSON, duplicate object member names (including escaped spellings), `NaN`/`Infinity`/out-of-range number literals, and unpaired UTF-16 surrogates (literal or escaped) are all rejected.
-- Verified against the RFC 8785 appendix B number table, the RFC section 3.2.3 sorting vector, the exact section 3.2.4 output bytes, the official `cyberphone/json-canonicalization` test suite, and 10,000 committed number vectors generated from the V8 engine (plus one million randomized bit patterns during development).
-- Zero runtime dependencies; built on the in-box `System.Text.Json` reader.
-- SourceLink (GitHub), deterministic CI builds and `.snupkg` symbol packages.
+- `IWebhookVerifier` interface: a single contract taking the raw request body and headers, returning a `WebhookVerificationResult`.
+- `StripeWebhookVerifier`: verifies the `Stripe-Signature` header, HMAC-SHA256 over `{timestamp}.{payload}`, with configurable timestamp tolerance (default 300 seconds) and support for multiple `v1` signatures during secret rotation.
+- `GitHubWebhookVerifier`: verifies the `X-Hub-Signature-256` header, HMAC-SHA256 hex of the raw body.
+- `PaystackWebhookVerifier`: verifies the `X-Paystack-Signature` header, HMAC-SHA512 hex of the raw body.
+- `FlutterwaveWebhookVerifier`: verifies the `verif-hash` header via constant-time equality against a configured secret hash.
+- `StandardWebhooksVerifier`: verifies the `webhook-id` / `webhook-timestamp` / `webhook-signature` headers per the Standard Webhooks specification, HMAC-SHA256 over `{id}.{timestamp}.{payload}` with a base64 secret, configurable timestamp tolerance, and support for multiple space-separated signatures.
+- `WebhookVerificationResult` and `WebhookVerificationFailureReason`, shared across every verifier, distinguishing missing headers, malformed headers, unsupported signature versions, stale timestamps, and signature mismatches.
+- `WebhookVerificationDefaults.DefaultTimestampTolerance` (300 seconds), used by every timestamped scheme unless overridden.
+- All signature comparisons use `CryptographicOperations.FixedTimeEquals` for constant-time behavior.
+- Known-answer test fixtures for every scheme, including the official Standard Webhooks / Svix worked example, verified independently against Python `hmac`/`hashlib` output.
+- Zero runtime dependencies; built entirely on `System.Security.Cryptography` and the in-box `System.Text.Json`.
+- SourceLink (GitHub), deterministic CI builds, and `.snupkg` symbol packages.

@@ -1,0 +1,7 @@
+{
+  "description": "Self-generated known-answer vector for Stripe's Stripe-Signature scheme, computed independently with Python hmac/hashlib against the documented signing-string format t.payload.",
+  "secret": "whsec_test_secret_12345",
+  "payload": "{\"id\":\"evt_test_1\",\"object\":\"event\",\"type\":\"payment_intent.succeeded\"}",
+  "timestamp": 1614556800,
+  "signature": "e7550a48f283f20ef36a815aaa17674c2813a379e8c4eb677a1f0e22935858dc"
+}

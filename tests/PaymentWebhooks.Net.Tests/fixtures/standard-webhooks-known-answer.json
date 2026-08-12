@@ -1,0 +1,8 @@
+{
+  "description": "Official worked example published by the Standard Webhooks specification (standardwebhooks.com / Svix docs) for the v1 HMAC-SHA256 signing scheme, verified independently with Python hmac/hashlib.",
+  "messageId": "msg_p5jXN8AQM9LWM0D4loKWxJek",
+  "timestamp": 1614265330,
+  "payload": "{\"test\": 2432232314}",
+  "secret": "whsec_MfKQ9r8GKYqrTwjUPD8ILPZIo2LaLaSw",
+  "signature": "v1,g0hM9SsE+OTPJTGt/tmIKtSyZlE3uFJELVlNIOLJ1OE="
+}

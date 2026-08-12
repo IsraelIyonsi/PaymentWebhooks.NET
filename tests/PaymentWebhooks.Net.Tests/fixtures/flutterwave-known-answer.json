@@ -1,0 +1,4 @@
+{
+  "description": "Flutterwave's verif-hash scheme is a pre-shared static value, not a computed signature, so the fixture is simply the configured hash.",
+  "secretHash": "FLWSECK_TEST_verif_hash_abc123"
+}
