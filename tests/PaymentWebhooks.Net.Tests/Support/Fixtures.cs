@@ -56,3 +56,14 @@ internal sealed class FlutterwaveFixture
 
     public string SecretHash { get; set; } = string.Empty;
 }
+
+internal sealed class ShopifyFixture
+{
+    public string Description { get; set; } = string.Empty;
+
+    public string Secret { get; set; } = string.Empty;
+
+    public string Payload { get; set; } = string.Empty;
+
+    public string Signature { get; set; } = string.Empty;
+}

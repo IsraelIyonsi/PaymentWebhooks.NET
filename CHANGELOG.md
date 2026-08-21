@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-08-21
+
+### Added
+
+- `ShopifyWebhookVerifier`: verifies the `X-Shopify-Hmac-Sha256` header, base64-encoded HMAC-SHA256 of the raw body keyed by the app's API secret (shared secret). The header is base64-decoded to its raw 32 bytes and compared in constant time, so casing and padding differences never affect the result. Shopify's scheme carries no timestamp, so there is no replay window to configure.
+- Known-answer test fixture for Shopify, independently hand-verified against Python `hmac`/`hashlib`/`base64` output.
+
 ## [0.1.0] - 2026-08-12
 
 ### Added

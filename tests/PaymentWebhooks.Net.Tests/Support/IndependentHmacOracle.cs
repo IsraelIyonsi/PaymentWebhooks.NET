@@ -38,6 +38,13 @@ internal static class IndependentHmacOracle
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
+    public static string ShopifySignature(string secret, string payload)
+    {
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
+        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(payload));
+        return Convert.ToBase64String(hash);
+    }
+
     public static string StandardWebhooksSignature(
         string base64Secret,
         string messageId,

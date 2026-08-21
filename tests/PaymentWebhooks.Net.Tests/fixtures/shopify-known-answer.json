@@ -1,0 +1,6 @@
+{
+  "description": "Self-generated known-answer vector for Shopify's X-Shopify-Hmac-Sha256 scheme, computed independently with Python hmac/hashlib/base64 as base64(HMAC-SHA256(secret, rawBody)).",
+  "secret": "shopify_test_shared_secret",
+  "payload": "{\"id\":820982911946154508,\"test\":true}",
+  "signature": "h6bYfKK+Mi6PVQLOqpCbwl0/FTD9VkOUwF7UGncpHtc="
+}

@@ -1,6 +1,6 @@
 # PaymentWebhooks.NET
 
-Verify inbound payment webhook signatures for Stripe, Paystack, Flutterwave, GitHub, and Standard Webhooks, all through one interface. Constant-time comparison, timestamp-based replay protection, zero dependencies.
+Verify inbound payment webhook signatures for Stripe, Paystack, Flutterwave, Shopify, GitHub, and Standard Webhooks, all through one interface. Constant-time comparison, timestamp-based replay protection, zero dependencies.
 
 Every payment provider signs webhooks differently: Stripe puts a timestamp and HMAC in one header, Paystack just hashes the body, Flutterwave sends back a static value, GitHub prefixes its hex digest. Get any of it wrong, string comparison instead of constant-time, no replay window, wrong signing string, and you either reject real payments or accept forged ones. There is no single, current NuGet package that covers this set with a consistent API and a security-first default. Most projects end up with a hand-rolled `HMACSHA256` call copy-pasted from a blog post, no timestamp check, and a `==` string comparison that leaks timing information. PaymentWebhooks.NET is the package that should already exist: one contract, five schemes, and a signing-string implementation checked against vendor-documented or independently verified test vectors, not just eyeballed.
 
@@ -47,6 +47,19 @@ var result = verifier.Verify(rawRequestBody, new Dictionary<string, string>
 
 Paystack has no timestamp in its scheme, so there is nothing to check for staleness; the HMAC-SHA512 comparison alone is what protects you.
 
+### Shopify
+
+```csharp
+var verifier = new ShopifyWebhookVerifier(secret: "shpss_...");
+
+var result = verifier.Verify(rawRequestBody, new Dictionary<string, string>
+{
+    ["X-Shopify-Hmac-Sha256"] = request.Headers["X-Shopify-Hmac-Sha256"],
+});
+```
+
+The secret is the app's API secret (shared secret). Shopify computes HMAC-SHA256 over the raw body and sends the digest base64-encoded, not hex. There is no timestamp in the scheme, so the HMAC comparison alone is what protects you. The verifier base64-decodes the header to its raw 32 bytes and compares those in constant time, so header casing and padding differences never affect the result.
+
 ### Standard Webhooks (Standard Webhooks compliant providers)
 
 ```csharp
@@ -88,6 +101,7 @@ The library uses only `System.Security.Cryptography` and `System.Text.Json` (the
 | `StripeWebhookVerifier` | `Stripe-Signature` | HMAC-SHA256 over `{timestamp}.{payload}` | Yes, configurable tolerance |
 | `GitHubWebhookVerifier` | `X-Hub-Signature-256` | HMAC-SHA256 over the raw body | No (GitHub's scheme has no timestamp) |
 | `PaystackWebhookVerifier` | `X-Paystack-Signature` | HMAC-SHA512 over the raw body | No (Paystack's scheme has no timestamp) |
+| `ShopifyWebhookVerifier` | `X-Shopify-Hmac-Sha256` | HMAC-SHA256 over the raw body, base64 | No (Shopify's scheme has no timestamp) |
 | `FlutterwaveWebhookVerifier` | `verif-hash` | Constant-time equality against a configured secret hash | No (Flutterwave's scheme has no timestamp) |
 | `StandardWebhooksVerifier` | `webhook-id`, `webhook-timestamp`, `webhook-signature` | HMAC-SHA256 over `{id}.{timestamp}.{payload}`, base64 | Yes, configurable tolerance |
 
